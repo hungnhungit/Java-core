@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Spring Security Tutorial</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+	<div class="container">
+		<h1>Create Category</h1>
+		<form action="#" th:action="@{create}" method="post" th:object="${category}">
+			<div class="form-group">
+				<label for="name">Name : </label>
+				<input type="text" th:field="*{name}" id="name" class="form-control" placeholder="Name"/>
+			</div>
+			
+			<div class="form-group">
+				<label>Parent : </label>
+	          	<select  class="form-control" th:field="*{parentId}">
+	          		<option value="">Select Category</option>
+		  			<option th:each="category : ${categories}" 
+		          			th:value="${category.id}"
+		          			th:text="${category.name}">
+		          	</option>
+				</select>
+			</div>
+			<input type="submit" class="btn btn-success" value="Save"/>
+		</form>
+	</div>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Spring Security Tutorial</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<style>
+	
+	.active{
+		color: red;
+	}
+
+</style>
+<body>
+	<div class="container">
+		<div th:replace="partials/alert :: alert(messages = ${messages})"></div>
+		
+		<h1>
+		List Post
+		<a th:href="@{/admin/posts/create}" th:text="Create" class="btn btn-success"></a>
+		</h1>
+		<form th:action="@{/admin/posts}" th:method="GET">
+            <input type="text" name="search" placeholder="Search by title or name" class="form-control" style="width: 600px;float: left "/>
+            <input type="submit" value="Search" class="btn btn-success" style="float: left;margin-left: 20px"/>
+        </form>
+		<table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Slug</th>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Tag</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="post : ${posts}">
+                            <td th:text="${post.id}"></td>
+                            <td th:text="${post.name}"></td>
+                            <td th:text="${post.slug}"></td>
+                            <td th:text="${post.title}"></td>
+                            <td th:text="${post.category.name}"></td>
+                            <td><span th:each="tag : ${post.tags}" th:text="${tag.name} + ' '"></span></td>
+                            <td>
+                            	<a th:href="@{/admin/posts/edit/}+${post.id}" th:text="Edit" class="btn btn-primary"></a>
+                            	<a th:href="@{/admin/posts/delete/}+${post.id}" th:text="Delete" class="btn btn-danger"></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div th:if="${pager.endPage != 1 and pager.endPage !=0}">
+                	<a th:if="${posts.number} > 0" th:text="prev" th:href="@{/admin/posts/(pageSize=${selectedPageSize}, page=${posts.number},search=${search})}"></a>
+                	<each th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
+                	<a class="pageLink" th:href="@{/admin/posts/(pageSize=${selectedPageSize}, page=${page},search=${search})}" th:text="${page}" th:classappend="${active == page} ? active : ''"></a>
+                	</each>
+                	<a th:if="${posts.number != (pager.endPage-1)}" th:text="next" th:href="@{/admin/posts/(pageSize=${selectedPageSize}, page=${posts.number+2},search=${search})}"></a>
+				</div> 
+				<div th:if="${posts.totalPages == 0}" th:text="Empty"></div>
+	</div>
+</body>
+</html>

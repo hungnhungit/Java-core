@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Spring Security Tutorial</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<style>
+	
+	.active{
+		color: red;
+	}
+
+</style>
+<body>
+	<div class="container">
+		<div th:replace="partials/alert :: alert(messages = ${messages})"></div>
+		
+		<h1>
+		List category
+		<a th:href="@{/admin/categories/create}" th:text="Create" class="btn btn-success"></a>
+		</h1>
+		<form th:action="@{/admin/categories}" th:method="GET">
+            <input type="text" name="search" placeholder="Search by title or name" class="form-control" style="width: 600px;float: left "/>
+            <input type="submit" value="Search" class="btn btn-success" style="float: left;margin-left: 20px"/>
+        </form>
+		<table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>ParentName</th>
+                            <th>CreatedAt</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="category : ${categories}">
+                            <td th:text="${category.id}"></td>
+                            <td th:text="${category.name}"></td>
+                            <td th:each="parent : ${category.parentId}" th:text="${parent.name}"></td>
+                            <if th:unless="${category.parentId}">
+                            	<td></td>
+                            </if>
+                            <td th:text="${category.createdAt}"></td>
+                            <td>
+                            	<a th:href="@{/admin/categories/edit/}+${category.id}" th:text="Edit" class="btn btn-primary"></a>
+                            	<a th:href="@{/admin/categories/delete/}+${category.id}" th:text="Delete" class="btn btn-danger"></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div th:if="${pager.endPage != 1 and pager.endPage !=0}">
+                	<a th:if="${categories.number} > 0" th:text="prev" th:href="@{/admin/categories/(page=${categories.number})}"></a>
+                	<each th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
+                	<a class="pageLink" th:href="@{/admin/categories/(page=${page})}" th:text="${page}" th:classappend="${active == page} ? active : ''"></a>
+                	</each>
+                	<a th:if="${categories.number != (pager.endPage-1)}" th:text="next" th:href="@{/admin/categories/(page=${categories.number+2})}"></a>
+				</div> 
+	</div>
+</body>
+</html>
